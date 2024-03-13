@@ -46,7 +46,7 @@ public class Percentile_Normalization<T extends RealType<T>> implements Command 
     public void run() {
         final Img<T> image = (Img<T>)currentData.getImgPlus();
         if(deminsion.equals("2D")&&image.numDimensions()==3){
-            System.out.println("View the data as 2D img(s) to manipulation dependently");
+            System.out.println("View the data as 2D img(s) to manipulate dependently");
             List<RandomAccessibleInterval<FloatType>> results = new ArrayList<>();
             RandomAccessibleInterval<FloatType> res =new ArrayImgFactory<>(new FloatType()).create(10,10,10);;
             for(int i=0;i<image.dimension(2);i++){
@@ -86,7 +86,7 @@ public class Percentile_Normalization<T extends RealType<T>> implements Command 
             uiService.show("preview",imp);
 
         }else{List<RandomAccessibleInterval<FloatType>> results = new ArrayList<>();
-            System.out.println("View the data as a whole to manipulation");
+            System.out.println("View the data as a whole to manipulate");
             final long[] shape=new long[image.numDimensions()];
             for(int i=0;i< image.numDimensions();i++){
                 shape[i]= image.dimension(i);
