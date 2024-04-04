@@ -1,12 +1,13 @@
 package com.mycompany.imagej;
+import com.mycompany.imagej.test.WaitingDialog;
+import ij.IJ;
+import net.imglib2.Cursor;
 import net.imagej.Dataset;
 import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
+import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImg;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -18,6 +19,8 @@ import org.scijava.ui.UIService;
 import org.scijava.app.StatusService;
 import java.awt.*;
 import ij.ImagePlus;
+
+import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +32,9 @@ public class Percentile_Normalization<T extends RealType<T>> implements Command 
     private float eps=1e-8F;
     @Parameter
     StatusService statusService;
-    @Parameter(label = "min_Percentile",persist = true)
+    @Parameter(label = "min_Percentile",min="0",persist = true,callback = "run" )
     private float mi=10F;
-    @Parameter(label = "max_Percentile")
+    @Parameter(label = "max_Percentile",max="100",callback = "run")
     private float ma= 99.8F;
 //    @Parameter(label = "clip")
     private boolean clip=true;
@@ -44,11 +47,11 @@ public class Percentile_Normalization<T extends RealType<T>> implements Command 
     private OpService opService;
     @Override
     public void run() {
+
         final Img<T> image = (Img<T>)currentData.getImgPlus();
         if(deminsion.equals("2D")&&image.numDimensions()==3){
-            System.out.println("View the data as 2D img(s) to manipulate dependently");
+            System.out.println("View the data as 2D img(s) to manipulation dependently");
             List<RandomAccessibleInterval<FloatType>> results = new ArrayList<>();
-            RandomAccessibleInterval<FloatType> res =new ArrayImgFactory<>(new FloatType()).create(10,10,10);;
             for(int i=0;i<image.dimension(2);i++){
                 RandomAccessibleInterval<T> temp=Views.addDimension(Views.hyperSlice(image,2,i),0,0);
                 final long[] shape=new long[temp.numDimensions()];
@@ -60,33 +63,27 @@ public class Percentile_Normalization<T extends RealType<T>> implements Command 
                 RandomAccessibleInterval<FloatType> img=NormalizationUtils.Float1D2Img(temp_res,shape);
                 results.add(img);
             }
-            boolean flag=false;
-            int num=0;
-            for(RandomAccessibleInterval<FloatType> elem : results){
-                if(num>10)
-                    break;
-                num++;
-                if(flag==false){
-                    res=elem;
-                    flag=true;
-                    continue;
+            RandomAccessibleInterval<FloatType> ret =new ArrayImgFactory<>(new FloatType()).create(image.dimension(0),
+                    image.dimension(1),image.dimension(2));
+            for (int i = 0; i < results.size(); i++) {
+                RandomAccessibleInterval<FloatType> result = results.get(i);
+                Cursor<FloatType> resultCursor= (Cursor<FloatType>) Views.iterable(result).cursor();
+                Cursor<FloatType> retCursor= (Cursor<FloatType>) Views.iterable(Views.hyperSlice(ret, 2, i)).cursor();
+                while (resultCursor.hasNext() && retCursor.hasNext()) {
+                    retCursor.next().set(resultCursor.next().get());
                 }
-                res=Views.concatenate(2,res,elem);
             }
-            ImagePlus imp = ImageJFunctions.wrap(res, "image");
-//                final long[] shape=new long[res.numDimensions()];
-//                for(int j=0;j< res.numDimensions();j++){
-//                    shape[j]= res.dimension(j);
-//                }
-//                float[] ImgFloat=NormalizationUtils.Img2Float1D(res);
-//                res=NormalizationUtils.Float1D2Img(ImgFloat,shape);
-//                Img imp = (Img)res;
-//                System.out.println("Gathering the generated data");
-
-            uiService.show("preview",imp);
+            uiService.show("preview",ret);
 
         }else{List<RandomAccessibleInterval<FloatType>> results = new ArrayList<>();
-            System.out.println("View the data as a whole to manipulate");
+            System.out.println("View the data as a whole to manipulation");
+            WaitingDialog sa=new WaitingDialog(IJ.getInstance());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    sa.setVisible(true);
+                }
+            });
             final long[] shape=new long[image.numDimensions()];
             for(int i=0;i< image.numDimensions();i++){
                 shape[i]= image.dimension(i);
@@ -99,6 +96,7 @@ public class Percentile_Normalization<T extends RealType<T>> implements Command 
                 uiService.show("preview",elem);
           }
         statusService.clearStatus();
+          sa.setVisible(false);
         }
         NormalizationUtils.setImg_num(1);
     }
@@ -116,14 +114,19 @@ public class Percentile_Normalization<T extends RealType<T>> implements Command 
         final ImageJ ij = new ImageJ();
         ij.ui().showUI();
         File file_=new File("D:\\SR\\Data\\3Ddata\\temporal data\\c1-405-2.tif");
+
 //        File file_=new File("C:\\Users\\32081\\Pictures\\微信图片_20240227090004.png");
-        // ask the user for a file to open
+////         ask the user for a file to open
 //        final File file = ij.ui().chooseFile(file_, "open")
         if (file_ != null) {
             // load the dataset
-            final Dataset dataset = ij.scifio().datasetIO().open(file_.getPath());
+
+
+             Dataset dataset = ij.scifio().datasetIO().open(file_.getPath());
             // show the image
-            ij.ui().show(dataset);
+             ij.ui().show(dataset);
+        ContrastAdjuster a=new ContrastAdjuster();
+        a.run("dke");
             ij.command().run(Percentile_Normalization.class,true);
         }
     }
