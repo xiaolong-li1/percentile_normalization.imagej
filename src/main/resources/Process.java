@@ -88,6 +88,7 @@ public class Process {
                 }
             }
             }
+        progressGUI.setVisible(false);
         result.setDisplayRange(result.getStack().getProcessor(1).getStatistics().min,result.getStack().getProcessor(1).getStatistics().max);
         // 返回归一化后的 ImagePlus 对象
 //        result.show();
