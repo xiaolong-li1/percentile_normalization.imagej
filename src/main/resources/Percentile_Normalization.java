@@ -779,7 +779,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
             if (d.yesPressed()) {
                 String m="slice";
                 ImagePlus result=processor.process(m,0,0,imp,((float)lowerBound)/1000,(float) (upperBound)/1000);
-            return;}
+            }
             else{
                 ImagePlus imagePlus=new ImagePlus("slice",ip);
                 String m="slice";
