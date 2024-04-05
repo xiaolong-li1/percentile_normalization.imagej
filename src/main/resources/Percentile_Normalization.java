@@ -775,7 +775,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
                     "Entire Stack?", "Apply LUT to all "+stack.size()+" stack slices?");
             if (d.cancelPressed())
             {imp.unlock();
-            return;}
+            }
             if (d.yesPressed()) {
                 String m="slice";
                 ImagePlus result=processor.process(m,0,0,imp,((float)lowerBound)/1000,(float) (upperBound)/1000);
@@ -784,7 +784,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
                 ImagePlus imagePlus=new ImagePlus("slice",ip);
                 String m="slice";
                 ImagePlus result=processor.process(m,0,0,imagePlus,((float)lowerBound)/1000,(float) (upperBound)/1000);
-                return;
+               
             }
         }
         else if (mode) {
@@ -794,18 +794,19 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
             if (d.cancelPressed())
             {imp.unlock();
                 ImagePlus imagePlus=new ImagePlus("stack",ip);
-                return;}
+               }
             if (d.yesPressed()) {
                 String m="stack";
                 ImagePlus result=processor.process(m,plot.LowerBoundValue,plot.UpperBoundValue,imp,((float)lowerBound)/10,(float) (upperBound)/10);
-            return;}
+            }
             else{
                 ImagePlus imagePlus=new ImagePlus("slice",ip);
                 String m="stack";
                 ImagePlus result=processor.process(m,plot.LowerBoundValue,plot.UpperBoundValue,imagePlus,((float)lowerBound)/10,(float) (upperBound)/10);
-                return;
+           
             }
         }
+        imp.unlock();
     }
     void apply_(ImagePlus imp, ImageProcessor ip) {
         if (balance && imp.isComposite())
