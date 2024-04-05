@@ -6,11 +6,11 @@
 
 ## How to use
 
-### 1. Add the [Percentile_Norm-0.4.1-SNAPSHOT-sources.jar](target/Percentile_Norm-0.4.1-SNAPSHOT-sources.jar)to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:![alt text](./imgs/image-1.png)
+### 1. Add the [Percentile_Norm-0.4.1-SNAPSHOT-sources.jar](target/Percentile_Norm-0.4.1-SNAPSHOT-sources.jar)to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:![alt text](./imgs/image-1.png#pic_center =600*300)
 
 ### 2. The mainboard and brief introduction to some confusing concepts in it
 
-![alt text](./imgs/image-2.png)
+![alt text](./imgs/image-2.png#pic_center)
 * ###  the two number(0,255 in this snapshot) under the histogram:
 The left one represent the smallest pixel value in the scope(a slice or stack depending on the *Mode* setting).Accordingly the right one stands for the biggest value in the scope.
 * ### Mode:     
