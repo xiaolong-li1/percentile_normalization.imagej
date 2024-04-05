@@ -6,7 +6,7 @@
 
 ## How to use
 
-### 1. Add the [Adaptive_Median_Filter-0.1.0.jar]()to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:![alt text](image-1.png)
+### 1. Add the [Adaptive_Median_Filter-0.4.1.jar](./target/)to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:![alt text](./imgs/image-1.png)
 
 ### 2. The mainboard and brief introduction to some confusing concepts in it
 
