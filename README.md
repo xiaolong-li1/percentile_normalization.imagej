@@ -17,7 +17,8 @@
 ### 2. The mainboard and brief introduction to some confusing concepts in it
 <br>
 <div align="center">
-![alt text](./imgs/UI.png)
+<!-- ![alt text](./imgs/UI.png) -->
+ <img src="./imgs/UI.png">
 </div>
 * ###  the two number(0,255 in this snapshot) under the histogram:
 The left one represent the smallest pixel value in the scope(a slice or stack depending on the *Mode* setting).Accordingly the right one stands for the biggest value in the scope.
