@@ -91,7 +91,7 @@ public class Process {
         progressGUI.setVisible(false);
         result.setDisplayRange(result.getStack().getProcessor(1).getStatistics().min,result.getStack().getProcessor(1).getStatistics().max);
         // 返回归一化后的 ImagePlus 对象
-//        result.show();
+        result.show();
         save(result);
         return result;
     }
@@ -252,10 +252,11 @@ class ProgressBarGUI extends JFrame {
         add(label, BorderLayout.SOUTH);
     }
 
+
     public void updateProgress(int n) {
         progressBar.setValue(n);
         label.setText("Processing " + n + " out of " + progressBar.getMaximum());
-        if(n==finish){
+        if(n==(finish)){
             this.setVisible(false);
         }
     }
