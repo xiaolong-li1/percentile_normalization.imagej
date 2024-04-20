@@ -16,8 +16,9 @@
 
 ### 2. The mainboard and brief introduction to some confusing concepts in it
 <br>
-
-![alt text](./imgs/UI.png#pic_center)
+<div align="center">
+![alt text](./imgs/UI.png)
+</div>
 * ###  the two number(0,255 in this snapshot) under the histogram:
 The left one represent the smallest pixel value in the scope(a slice or stack depending on the *Mode* setting).Accordingly the right one stands for the biggest value in the scope.
 * ### Mode:     
@@ -30,5 +31,6 @@ Undo the changes that happens after the last apply.
 Just click this buttom, the appropriate manipulation may happens on your image. 
 * ### Apply
 Only do the apply can we save it in the disk later.
-## Here comes a presentation.
+<br>
+##3.Here comes a presentation.
 ![alt text](./imgs/Video_2024-04-20_230501.gif)
