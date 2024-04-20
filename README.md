@@ -24,4 +24,4 @@ Just click this buttom, the appropriate manipulation may happens on your image.
 * ### Apply
 Only do the apply can we save it in the disk later.
 ## Here comes a presentation.
-![alt text](./imgs/b65974b5-d04d-4948-8600-1fa80ff72d7c.gif)
+![alt text](./imgs/Video_2024-04-20_230501.gif)
