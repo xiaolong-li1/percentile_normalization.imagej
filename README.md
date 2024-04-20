@@ -8,7 +8,11 @@
 
 ### 1. Add the [Percentile_Norm-0.4.2-SNAPSHOT.jar](target/Percentile_Norm-0.4.2-SNAPSHOT.jar)to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:![alt text](./imgs/image-1.png#pic_center)
 
+
+
 ### 2. The mainboard and brief introduction to some confusing concepts in it
+
+
 
 ![alt text](./imgs/UI.png#pic_center)
 * ###  the two number(0,255 in this snapshot) under the histogram:
