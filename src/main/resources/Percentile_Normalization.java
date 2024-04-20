@@ -10,7 +10,6 @@ import ij.plugin.frame.Recorder;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.*;
-import net.imglib2.type.numeric.real.FloatType;
 
 /** This plugin implements the Brightness/Contrast, Window/level and
  Color Balance commands, all in the Image/Adjust sub-menu. It
@@ -30,16 +29,17 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
     private static Percentile_Normalization instance;
 //    Percentile_Normalization_Utils<FloatType> processor=new Percentile_Normalization_Utils<FloatType>();
     int sliderRange = 1001;
-    boolean doAutoAdjust,doReset,doSet, doSnapshot,doApplyLut,doRefresh;
+    boolean doAutoAdjust,doReset,doSet, doSnapshot,doApplyLut, doAuto;
     boolean mode=false;//default state is the slice scope
     Panel panel, tPanel;
-    Button resetB, snapshotB,refreshB,applyB,setB;
+    Button resetB, snapshotB, autoB,applyB,setB;
     int previousImageID;
     int previousType;
     int previousSlice = 1;
     ImageJ ij;
     boolean change_occur=true;
     double min, max;
+    double autoThreshold=0.001;
     double defaultMin, defaultMax;
     //lxl-add follow the name style of "defaultMin, defaultMax"
     int previousUpperBound=sliderRange-1,previousLowerBound=-1;
@@ -51,7 +51,6 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
     boolean done=false;
     //the num of max slice num to calc when mode is 3d
     int maxslice=100;
-    int autoThreshold;
     GridBagLayout gridbag;
     GridBagConstraints c;
     ImagePlus copy;
@@ -266,10 +265,10 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
         resetB.addKeyListener(ij);
         panel.add(resetB);
         //refresh UI TODO
-        refreshB=new TrimmedButton("Refresh",trim);
-        refreshB.addActionListener(this);
-        refreshB.addKeyListener(ij);
-        panel.add(refreshB);
+        autoB =new TrimmedButton("Auto",trim);
+        autoB.addActionListener(this);
+        autoB.addKeyListener(ij);
+        panel.add(autoB);
         //apply TODO
         applyB = new TrimmedButton("Apply",trim);
         applyB.addActionListener(this);
@@ -372,8 +371,8 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
             doReset = true;
         else if (b== snapshotB)
             doSnapshot = true;
-        else if(b==refreshB)
-            doRefresh=true;
+        else if(b== autoB)
+            doAuto =true;
         else if(b==applyB)
             doApplyLut=true;
         else if(b==setB)
@@ -493,7 +492,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
 //            defaultMax=imp.getDisplayRangeMax();
             if (!doReset)
                 plotHistogram(imp);
-            autoThreshold = 0;
+            autoThreshold = 0.001;
             if (imp.isComposite())
                 IJ.setKeyUp(KeyEvent.VK_SHIFT);
     }
@@ -591,7 +590,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
         lowerBound=0;
         updateScrollBars(null, false,true);
         plotHistogram(imp);
-        autoThreshold = 0;
+        autoThreshold =0.001;
     }
     void setMinAndMax(ImagePlus imp, double min, double max) {
         boolean rgb = imp.getType()==ImagePlus.COLOR_RGB;
@@ -775,7 +774,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
                     "Entire Stack?", "Apply LUT to all "+stack.size()+" stack slices?");
             if (d.cancelPressed())
             {imp.unlock();
-            }
+            return;}
             if (d.yesPressed()) {
                 String m="slice";
                 ImagePlus result=processor.process(m,0,0,imp,((float)lowerBound)/1000,(float) (upperBound)/1000);
@@ -784,7 +783,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
                 ImagePlus imagePlus=new ImagePlus("slice",ip);
                 String m="slice";
                 ImagePlus result=processor.process(m,0,0,imagePlus,((float)lowerBound)/1000,(float) (upperBound)/1000);
-               
+
             }
         }
         else if (mode) {
@@ -794,7 +793,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
             if (d.cancelPressed())
             {imp.unlock();
                 ImagePlus imagePlus=new ImagePlus("stack",ip);
-               }
+                }
             if (d.yesPressed()) {
                 String m="stack";
                 ImagePlus result=processor.process(m,plot.LowerBoundValue,plot.UpperBoundValue,imp,((float)lowerBound)/10,(float) (upperBound)/10);
@@ -803,9 +802,9 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
                 ImagePlus imagePlus=new ImagePlus("slice",ip);
                 String m="stack";
                 ImagePlus result=processor.process(m,plot.LowerBoundValue,plot.UpperBoundValue,imagePlus,((float)lowerBound)/10,(float) (upperBound)/10);
-           
             }
         }
+        reset(imp, ip);
         imp.unlock();
     }
     void apply_(ImagePlus imp, ImageProcessor ip) {
@@ -954,56 +953,56 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
         }
     }
 
-    void autoAdjust(ImagePlus imp, ImageProcessor ip) {
-        if (RGBImage)
-            ip.reset();
-        ImageStatistics stats = imp.getRawStatistics();
-        int limit = stats.pixelCount/10;
-        int[] histogram = stats.histogram;
-        if (autoThreshold<10)
-            autoThreshold = AUTO_THRESHOLD;
-        else
-            autoThreshold /= 2;
-        int threshold = stats.pixelCount/autoThreshold;
-        int i = -1;
-        boolean found = false;
-        int count;
-        do {
-            i++;
-            count = histogram[i];
-            if (count>limit) count = 0;
-            found = count>threshold;
-        } while (!found && i<255);
-        int hmin = i;
-        i = 256;
-        do {
-            i--;
-            count = histogram[i];
-            if (count>limit) count = 0;
-            found = count > threshold;
-        } while (!found && i>0);
-        int hmax = i;
-        Roi roi = imp.getRoi();
-        if (hmax>=hmin) {
-            if (RGBImage) imp.deleteRoi();
-            min = stats.histMin+hmin*stats.binSize;
-            max = stats.histMin+hmax*stats.binSize;
-            if (min==max)
-            {min=stats.min; max=stats.max;}
-//            setMinAndMax(imp, min, max);
-            if (RGBImage && roi!=null) imp.setRoi(roi);
-        } else {
-            reset(imp, ip);
-            return;
-        }
-        updateScrollBars(null, false,true);
-        if (Recorder.record) {
-            if (Recorder.scriptMode())
-                Recorder.recordCall("IJ.run(imp, \"Enhance Contrast\", \"saturated=0.35\");");
-            else
-                Recorder.record("run", "Enhance Contrast", "saturated=0.35");
-        }
-    }
+//    void autoAdjust(ImagePlus imp, ImageProcessor ip) {
+//        if (RGBImage)
+//            ip.reset();
+//        ImageStatistics stats = imp.getRawStatistics();
+//        int limit = stats.pixelCount/10;
+//        int[] histogram = stats.histogram;
+//        if (autoThreshold<10)
+//            autoThreshold = AUTO_THRESHOLD;
+//        else
+//            autoThreshold /= 2;
+//        int threshold = stats.pixelCount/autoThreshold;
+//        int i = -1;
+//        boolean found = false;
+//        int count;
+//        do {
+//            i++;
+//            count = histogram[i];
+//            if (count>limit) count = 0;
+//            found = count>threshold;
+//        } while (!found && i<255);
+//        int hmin = i;
+//        i = 256;
+//        do {
+//            i--;
+//            count = histogram[i];
+//            if (count>limit) count = 0;
+//            found = count > threshold;
+//        } while (!found && i>0);
+//        int hmax = i;
+//        Roi roi = imp.getRoi();
+//        if (hmax>=hmin) {
+//            if (RGBImage) imp.deleteRoi();
+//            min = stats.histMin+hmin*stats.binSize;
+//            max = stats.histMin+hmax*stats.binSize;
+//            if (min==max)
+//            {min=stats.min; max=stats.max;}
+////            setMinAndMax(imp, min, max);
+//            if (RGBImage && roi!=null) imp.setRoi(roi);
+//        } else {
+//            reset(imp, ip);
+//            return;
+//        }
+//        updateScrollBars(null, false,true);
+//        if (Recorder.record) {
+//            if (Recorder.scriptMode())
+//                Recorder.recordCall("IJ.run(imp, \"Enhance Contrast\", \"saturated=0.35\");");
+//            else
+//                Recorder.record("run", "Enhance Contrast", "saturated=0.35");
+//        }
+//    }
 
 
 
@@ -1070,16 +1069,16 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
 //        int lowerBoundValue=lowerBound;
 //        int upperBoundValue=upperBound;
         if (doReset) action = RESET;
-        else if (doAutoAdjust) action = AUTO;
+//        else if (doAutoAdjust) action = AUTO;
         else if (doSnapshot) action=SNAPSHOT;
-        else if (doRefresh) action=REFRESH;
+        else if (doAuto) action=AUTO;
         else if (doApplyLut)  action = APPLY;
         else if(doSet) action=SET;
         else if (lowerBound!=previousLowerBound||mode!=previousMode) action = MIN;//if mode changes then update the plot lowerbound and upperbound
         else if (upperBound!=previousUpperBound) action = MAX;
         else {
             return;}//no change occur then return
-        doSet=doReset = doAutoAdjust = doApplyLut =doRefresh=doSnapshot= false;
+        doSet=doReset = doAutoAdjust = doApplyLut = doAuto =doSnapshot= false;
         imp = WindowManager.getCurrentImage();
         if (imp==null) {
             IJ.beep();
@@ -1113,6 +1112,7 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
             case SET:Set(imp,ip);
             case REFRESH: doRefresh();
             break;
+            case AUTO: AutoAdjust(imp,ip);break;
             case MAX: adjustMaxBound(imp, ip, upperBound);
             previousUpperBound=upperBound;
             break;
@@ -1127,6 +1127,20 @@ public class Percentile_Normalization extends PlugInDialog implements Runnable,
         if (RGBImage)
             imp.unlock();
 
+    }
+    private  void AutoAdjust(ImagePlus imp,ImageProcessor ip){
+        if(autoThreshold<0.2){
+            autoThreshold=autoThreshold*2;
+        }
+        else{
+            autoThreshold=0.001;
+        }
+        double upper=1-autoThreshold;
+        double lower=autoThreshold;
+        upperBound=(int)(upper*1000);
+        lowerBound=(int) (lower*1000);
+        updateScrollBars(null,false,true);
+        setMinAndMax(imp, plot.LowerBoundValue, plot.UpperBoundValue);
     }
 
     private void Set(ImagePlus imp,ImageProcessor ip) {
