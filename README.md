@@ -2,17 +2,15 @@
 
 ## Introduction
 
-*This Imagej plugin provides a real-time visualization of the Image Percentile Normalization result with Boundary parameters that can be adjusted easily.*
+*This Imagej plugin provides a real-time visualization of the Image Percentile Normalization result with Boundary parameters that can be adjusted easily.*<br><br>
 
 ## How to use
 
 ### 1. Add the [Percentile_Norm-0.4.2-SNAPSHOT.jar](target/Percentile_Norm-0.4.2-SNAPSHOT.jar)to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:![alt text](./imgs/image-1.png#pic_center)
-
-
+<br>
 
 ### 2. The mainboard and brief introduction to some confusing concepts in it
-
-
+<br>
 
 ![alt text](./imgs/UI.png#pic_center)
 * ###  the two number(0,255 in this snapshot) under the histogram:
