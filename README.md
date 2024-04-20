@@ -34,5 +34,5 @@ Just click this buttom, the appropriate manipulation may happens on your image.
 * ### Apply
 Only do the apply can we save it in the disk later.
 <br>
-##3.Here comes a presentation.
+## 3.Here comes a presentation.
 ![alt text](./imgs/Video_2024-04-20_230501.gif)
