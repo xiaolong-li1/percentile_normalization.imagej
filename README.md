@@ -10,7 +10,7 @@
 
 ### 2. The mainboard and brief introduction to some confusing concepts in it
 
-![alt text](./imgs/image-2.png#pic_center)
+![alt text](./imgs/UI.png#pic_center)
 * ###  the two number(0,255 in this snapshot) under the histogram:
 The left one represent the smallest pixel value in the scope(a slice or stack depending on the *Mode* setting).Accordingly the right one stands for the biggest value in the scope.
 * ### Mode:     
@@ -19,8 +19,8 @@ this configuration is to specify the scope where we get the x% rank. So the stac
 The same function as the sliders above.Just another way the get the input argument lower_percentile and the upper_percentile.
 * ### Reset
 Undo the changes that happens after the last apply.
-* ### Refresh
-When the UI get stuck or behaves wired,click it may fix the problem.
+* ### Auto
+Just click this buttom, the appropriate manipulation may happens on your image. 
 * ### Apply
 Only do the apply can we save it in the disk later.
 ## Here comes a presentation.
