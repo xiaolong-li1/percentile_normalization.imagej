@@ -21,7 +21,7 @@
  <img src="./imgs/UI.png">
 </div>
 
-* ### the two number(0,255 in this snapshot) under the histogram:
+* ### the two number(35,657 in this snapshot) under the histogram:
 The left one represent the smallest pixel value in the scope(a slice or stack depending on the *Mode* setting).Accordingly the right one stands for the biggest value in the scope.
 * ### Mode:     
 this configuration is to specify the scope where we get the x% rank. So the stack scope and slice scope is pretty easy to understand now.
