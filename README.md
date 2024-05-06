@@ -1,8 +1,16 @@
 # Percentile_normalization Plugin for imagej
 
+
 ## Introduction
 
-*This Imagej plugin provides a real-time visualization of the Image Percentile Normalization result with Boundary parameters that can be adjusted easily.*<br><br>
+*This plugin is developed for SN2N, a self-inspired learning to denoise method for live-cell super-resolution microscopy.*
+
+- **Preprint:** [Liying Qu et al. Self-inspired learning to denoise for live-cell super-resolution microscopy, bioRxiv (2024).](https://doi.org/10.1101/2024.01.23.576521)
+
+- **Code avaliable:** https://github.com/WeisongZhao/percentile_normalization.imagejFor 
+- For the ultralow SNR data with ultrahigh baseline signal and a number of hot pixels, we adapted the routinely used percentile normalization before the data generation step to remove the smooth background or hot pixels. 
+
+*This ImageJ plugin offers real-time execution of Image Percentile Normalization. Users can directly remove the ultra-strong baseline signal before training using this ready-to-use plugin.*<br><br>
 
 ## How to use
 
