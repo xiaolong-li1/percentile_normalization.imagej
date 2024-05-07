@@ -14,7 +14,7 @@
 
 ## How to use
 
-### 1. Add the [Percentile_Norm-0.4.2-SNAPSHOT.jar](target/Percentile_Norm-0.4.2-SNAPSHOT.jar)to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:
+### 1. Add the [Percentile_Norm-0.4.2-SNAPSHOT.jar](https://github.com/WeisongZhao/percentile_normalization.imagej/releases/download/v0.4.2/Percentile_Norm-0.4.2-SNAPSHOT.jar) to your imageJ plugin folder as usual and it will show up in `process->Percentile_Normalization`:
 <div align="center">
 
 <img src="./imgs/image-1.png" height="700" width="500" >
